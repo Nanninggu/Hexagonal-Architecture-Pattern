@@ -1,29 +1,23 @@
 package com.example.Hexagonal_architecture_pattern.event;
 
 import com.example.Hexagonal_architecture_pattern.dto.PaymentEvent;
-import com.example.Hexagonal_architecture_pattern.message.MessageBroker;
+import com.google.gson.Gson;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class EventPublisherImpl implements EventPublisher {
-    // This could be a message broker like RabbitMQ, Kafka, etc.
-    private final MessageBroker messageBroker;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final Gson gson;
 
-    public EventPublisherImpl(MessageBroker messageBroker) {
-        this.messageBroker = messageBroker;
+    public EventPublisherImpl(KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.gson = new Gson();
     }
 
     @Override
-    public void publish(PaymentEvent event) {
-        // Convert the event to a format suitable for your message broker
-        String message = convertEventToMessage(event);
-        // Send the message to the broker
-        messageBroker.send(message);
-    }
-
-    private String convertEventToMessage(PaymentEvent event) {
-        // Implement this method based on your requirements
-        // For example, you might convert the event to JSON
-        return null;
+    public void publish(String payload) {
+//        String message = gson.toJson(payload);
+        kafkaTemplate.send("exam", payload);
     }
 }

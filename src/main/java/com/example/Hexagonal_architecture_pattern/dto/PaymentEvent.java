@@ -37,4 +37,7 @@ public class PaymentEvent {
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
+
+    public void setPayload(String payload) {
+    }
 }
