@@ -23,4 +23,25 @@ public class PaymentController {
         paymentSaga.handle(paymentEvent);
         return new ResponseEntity<>(paymentEvent, HttpStatus.CREATED);
     }
+
+    @PostMapping("/orderCreated")
+    public ResponseEntity<PaymentEvent> handleOrderCreated(@RequestBody PaymentEvent paymentEvent) {
+        paymentEvent.setEventType("ORDER_CREATED");
+        paymentSaga.handle(paymentEvent);
+        return new ResponseEntity<>(paymentEvent, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/paymentCompleted")
+    public ResponseEntity<PaymentEvent> handlePaymentCompleted(@RequestBody PaymentEvent paymentEvent) {
+        paymentEvent.setEventType("PAYMENT_COMPLETED");
+        paymentSaga.handle(paymentEvent);
+        return new ResponseEntity<>(paymentEvent, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/paymentFailed")
+    public ResponseEntity<PaymentEvent> handlePaymentFailed(@RequestBody PaymentEvent paymentEvent) {
+        paymentEvent.setEventType("PAYMENT_FAILED");
+        paymentSaga.handle(paymentEvent);
+        return new ResponseEntity<>(paymentEvent, HttpStatus.CREATED);
+    }
 }

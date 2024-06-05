@@ -1,23 +1,20 @@
 package com.example.Hexagonal_architecture_pattern.service;
 
 import com.example.Hexagonal_architecture_pattern.dto.PaymentEvent;
-import com.example.Hexagonal_architecture_pattern.mapper.PaymentMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Service
 public class PaymentSaga {
-    private final PaymentMapper paymentMapper;
+    private final PaymentService paymentService;
     private final KafkaService kafkaService;
 
-    public PaymentSaga(PaymentMapper paymentMapper, KafkaService kafkaService) {
-        this.paymentMapper = paymentMapper;
+    public PaymentSaga(PaymentService paymentService, KafkaService kafkaService) {
+        this.paymentService = paymentService;
         this.kafkaService = kafkaService;
     }
 
@@ -31,14 +28,11 @@ public class PaymentSaga {
                     event.setPayload(payload);
 
                     // Add payment
-                    paymentMapper.addPayment(event);
+                    paymentService.addPayment(event);
 
                     // Send message to Kafka
                     try {
-                        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                            kafkaService.sendMessage("exam", payload);
-                        });
-                        future.get(1, TimeUnit.SECONDS); // Wait for 10 seconds
+                        kafkaService.sendMessageAsync("exam", payload);
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         // Handle the exception
                         System.out.println("Connection to Kafka failed or timed out.");
@@ -52,12 +46,13 @@ public class PaymentSaga {
                     event.setPaymentId(paymentId); // Set paymentId on event
 
                     // Update payment with event containing paymentId
-                    paymentMapper.updatePayment(event);
+                    paymentService.updatePayment(event);
                     break;
 
                 case "PAYMENT_FAILED":
                     // Handle payment failure
-                    paymentMapper.deletePayment(event.getPaymentId());
+                    paymentService.deletePayment(event.getPaymentId());
+                    System.out.println("Payment failed for payment ID: " + event.getPaymentId());
                     break;
 
                 default:
@@ -65,6 +60,7 @@ public class PaymentSaga {
             }
         } catch (Exception e) {
             // Handle exception
+            System.out.println("An error occurred while processing the event: " + e.getMessage());
         }
     }
 }

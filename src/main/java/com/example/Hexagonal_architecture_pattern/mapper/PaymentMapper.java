@@ -10,11 +10,11 @@ public interface PaymentMapper {
     void addPayment(PaymentEvent payment);
 
     @Select("SELECT * FROM public.payments WHERE \"paymentId\" = #{paymentId}")
-    PaymentEvent getPayment(int id);
+    PaymentEvent getPayment(int paymentId);
 
     @Update("UPDATE public.payments SET \"orderId\" = #{orderId}, amount = #{amount}, \"eventType\" = #{eventType} WHERE \"paymentId\" = #{paymentId}")
     void updatePayment(PaymentEvent payment);
 
     @Delete("DELETE FROM public.payments WHERE \"paymentId\" = #{paymentId}")
-    void deletePayment(int id);
+    void deletePayment(int paymentId);
 }
