@@ -8,28 +8,30 @@ import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.UUID;
 
 public class PaymentEventClient {
     private static final HttpClient client = HttpClient.newHttpClient();
+    private static final String orderId = UUID.randomUUID().toString(); // UUID stored as a class-level variable
 
     public static void main(String[] args) throws Exception {
         // Create a PaymentEvent object for orderCreated
         PaymentEvent orderCreatedEvent = new PaymentEvent();
-        orderCreatedEvent.setOrderId("1234");
+        orderCreatedEvent.setOrderId(orderId); // Use the UUID
         orderCreatedEvent.setAmount(String.valueOf(100.0));
         orderCreatedEvent.setEventType("ORDER_CREATED");
 
         // Create a PaymentEvent object for paymentCompleted
         PaymentEvent paymentCompletedEvent = new PaymentEvent();
-        paymentCompletedEvent.setPaymentId(Integer.parseInt("217"));
-        paymentCompletedEvent.setOrderId("1234");
+        paymentCompletedEvent.setPaymentId(Integer.parseInt("227"));
+        paymentCompletedEvent.setOrderId(orderId); // Use the UUID
         paymentCompletedEvent.setAmount(String.valueOf(100.0));
         paymentCompletedEvent.setEventType("PAYMENT_COMPLETED");
 
         // Create a PaymentEvent object for paymentFailed
         PaymentEvent paymentFailedEvent = new PaymentEvent();
         paymentFailedEvent.setPaymentId(Integer.parseInt("217"));
-        paymentFailedEvent.setOrderId("1234");
+        paymentFailedEvent.setOrderId(orderId); // Use the UUID
         paymentFailedEvent.setAmount(String.valueOf(100.0));
         paymentFailedEvent.setEventType("PAYMENT_FAILED");
 

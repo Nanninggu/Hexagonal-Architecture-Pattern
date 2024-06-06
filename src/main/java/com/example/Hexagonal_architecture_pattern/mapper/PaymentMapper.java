@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 public interface PaymentMapper {
     @Insert("INSERT INTO public.payments(\"orderId\", amount, \"eventType\") VALUES(#{orderId}, #{amount}, #{eventType})")
     @Options(useGeneratedKeys = true, keyProperty = "paymentId")
-    void addPayment(PaymentEvent payment);
+    int addPayment(PaymentEvent payment);
 
     @Select("SELECT * FROM public.payments WHERE \"paymentId\" = #{paymentId}")
     PaymentEvent getPayment(int paymentId);
